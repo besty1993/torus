@@ -1,4 +1,5 @@
 import math
+from collections import Counter
 import numpy as np
 import time
 from matplotlib import pyplot as plt
@@ -89,6 +90,10 @@ class Render():
 
     def computeBrightness(self, normal_vectors):
         return np.dot(normal_vectors, self.light_vec)
+
+    def move(self, points, x_dist, y_dist, z_dist):
+        points += np.array(x_dist, y_dist, z_dist)
+        return points
 
     def rotate(self, vectors, x_rot, y_rot, z_rot):
         x_matrix = np.array([
