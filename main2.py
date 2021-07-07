@@ -5,20 +5,32 @@ from matplotlib import pyplot as plt
 
 class Torus():
     def __init__(self, R, r, a=0, b=0, c=0):
-        self.R = R      ## The torus center to the tube center
-        self.r = r      ## The radius of the tube
+        # https://web.cs.ucdavis.edu/~amenta/s12/findnorm.pdf
+        self.r_b = R      ## The torus center to the tube center
+        self.r_l = r      ## The radius of the tube
         self.a = a      ## X axis
         self.b = b      ## Y axis
         self.c = c      ## Z axis
         self.max = R + r + np.linalg.norm([a, b, c])
 
     def getPoint(self, theta, phi):
-        x = (self.R+self.r*math.cos(theta))*math.cos(phi) + self.a
-        y = (self.R+self.r*math.cos(theta))*math.sin(phi) + self.b
-        z = self.r * math.sin(theta) + self.c
+        """
+        Get a single point defined by theta and phi
+        Args :
+            theta : angle from the tube center to the tube surface
+            phi : Angle from the torus center to the tube center
+        """
+        x = (self.r_b+self.r_l*math.cos(theta))*math.cos(phi) + self.a
+        y = (self.r_b+self.r_l*math.cos(theta))*math.sin(phi) + self.b
+        z = self.r_l * math.sin(theta) + self.c
         return np.array([x, y, z])
 
     def getPoints(self, density):
+        """
+        Get all points defined by grided theta and phi
+        Args :
+            density : The density of grid of theta and phi
+        """
         linspace = np.linspace(0, 2*math.pi, density)
         vectors = [
             self.getPoint(theta, phi) \
@@ -30,8 +42,8 @@ class Torus():
     def getNormalVector(self, theta, phi):
         # https://trecs.se/torus.php
         x = math.cos(theta) * math.cos(phi)
-        y = math.sin(theta) * math.cos(phi)
-        z = math.sin(phi)
+        y = math.cos(theta) * math.sin(phi)
+        z = math.sin(theta)
         return np.array([x, y, z])
 
     def getNormalvectors(self, density):
@@ -99,6 +111,14 @@ class Render():
         new_vectors = np.dot(new_vectors, z_matrix)
         return new_vectors
 
+    def filterByNormalVectors(self, points, norms):
+        inners = np.dot(norms, self.plane_vec)
+        # print(points.shape, norms.shape, inners.shape)
+        points = points[inners>=0]
+        norms = norms[inners>=0]
+        # print(points.shape, norms.shape)
+        return points, norms
+
     def project(self, vectors):
         """
         project to xy plane
@@ -119,18 +139,18 @@ class Render():
         for i, point in enumerate(vectors):
             x = point[0]; y = point[1]
             text[y] = list(text[y])
-
-            # text[y][x]='@'
-            if brightness[i] > 0.8:
+            b = brightness[i]
+            
+            if b > 0.8:
                 text[y][x]='@'
-            elif brightness[i] > 0.6:
+            elif b > 0.6:
                 text[y][x]='$'
-            elif brightness[i] > 0.4:
-                text[y][x]='D'
-            elif brightness[i] > 0.2:
-                text[y][x]='/'
-            elif brightness[i] >= 0:
-                text[y][x]='*'
+            elif b > 0.4:
+                text[y][x]='|'
+            elif b > 0.2:
+                text[y][x]='×'
+            else:
+                text[y][x]='·'
 
             text[y] = ''.join(text[y])
         return np.array(text)
@@ -139,7 +159,7 @@ class Render():
 class CONFIG:
     R = 2
     r = 1
-    density = 100
+    density = 200
 
 if __name__ == '__main__':
     torus = Torus(R=CONFIG.R, r=CONFIG.r)
@@ -152,15 +172,17 @@ if __name__ == '__main__':
 
     for t in range(100):
         rot_x = 0
-        rot_y = 0
-        rot_z = t*2*math.pi/10
+        rot_y = t*2*math.pi/100
+        rot_z = 0
 
-        proj = renderer.rotate(points, rot_x, rot_y, rot_z)
-        norm_vectors = renderer.rotate(norm_vectors, rot_x, rot_y, rot_z)
+        rot_points = renderer.rotate(points, rot_x, rot_y, rot_z)
+        rot_norms = renderer.rotate(norm_vectors, rot_x, rot_y, rot_z)
 
-        proj = renderer.project(proj)
+        rot_points, rot_norms = renderer.filterByNormalVectors(rot_points, rot_norms)
+
+        proj = renderer.project(rot_points)
         proj = renderer.fitToWindow(proj)
-        brightness = renderer.computeBrightness(norm_vectors)
+        brightness = renderer.computeBrightness(rot_norms)
 
         print(renderer.print(proj, brightness))
         time.sleep(0.1)
