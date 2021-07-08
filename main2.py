@@ -86,13 +86,12 @@ class Render():
         
         self.light_vec = np.array([*args])
         self.light_vec = self.light_vec / norm
-        print(np.linalg.norm(self.light_vec))
 
     def computeBrightness(self, normal_vectors):
         return np.dot(normal_vectors, self.light_vec)
 
     def move(self, points, x_dist, y_dist, z_dist):
-        points += np.array(x_dist, y_dist, z_dist)
+        points += np.array([x_dist, y_dist, z_dist])
         return points
 
     def rotate(self, vectors, x_rot, y_rot, z_rot):
@@ -118,10 +117,8 @@ class Render():
 
     def filterByNormalVectors(self, points, norms):
         inners = np.dot(norms, self.plane_vec)
-        # print(points.shape, norms.shape, inners.shape)
         points = points[inners>=0]
         norms = norms[inners>=0]
-        # print(points.shape, norms.shape)
         return points, norms
 
     def project(self, vectors):
@@ -153,7 +150,9 @@ class Render():
             elif b > 0.4:
                 text[y][x]='|'
             elif b > 0.2:
-                text[y][x]='×'
+                text[y][x]='+'
+            elif b > 0.1:
+                text[y][x]='-'
             else:
                 text[y][x]='·'
 
