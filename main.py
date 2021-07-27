@@ -62,7 +62,7 @@ class Torus():
 
 class Render():
     def __init__(self, density=100, window_size=(70,35)):
-        self.density = density
+        self.density= density
         self.window_size = window_size
 
     def __call__(self, vectors, x_rot=0, y_rot=0, z_rot=0):
