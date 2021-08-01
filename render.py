@@ -1,5 +1,3 @@
-import math
-
 import numpy as np
 import pandas as pd
 
@@ -10,7 +8,8 @@ class Render():
         self.window_size = window_size
 
     def __call__(self, points, norms):
-        points, norms = self.filterByNormalVectors(points, norms)
+        ## The inner surface of cylinder get disappeared
+        # points, norms = self.filterByNormalVectors(points, norms)
 
         proj = self.project(points)
         proj = self.fitToWindow(proj)
@@ -95,17 +94,17 @@ class Render():
     def rotate(cls, vectors, x_rot, y_rot, z_rot):
         x_matrix = np.array([
             [1,                     0,                     0],
-            [0,       math.cos(x_rot),  (-1)*math.sin(x_rot)],
-            [0,       math.sin(x_rot),       math.cos(x_rot)],
+            [0,       np.cos(x_rot),  (-1)*np.sin(x_rot)],
+            [0,       np.sin(x_rot),       np.cos(x_rot)],
         ])
         y_matrix = np.array([
-            [math.cos(y_rot),       0,       math.sin(y_rot)],
+            [np.cos(y_rot),       0,       np.sin(y_rot)],
             [0,                     1,                     0],
-            [(-1)*math.sin(y_rot),  0,       math.cos(y_rot)]
+            [(-1)*np.sin(y_rot),  0,       np.cos(y_rot)]
         ])
         z_matrix = np.array([
-            [math.cos(z_rot),       (-1)*math.sin(z_rot),  0],
-            [math.sin(z_rot),       math.cos(z_rot),       0],
+            [np.cos(z_rot),       (-1)*np.sin(z_rot),  0],
+            [np.sin(z_rot),       np.cos(z_rot),       0],
             [0,                     0,                     1]
         ])
         new_vectors = np.dot(vectors, x_matrix)
