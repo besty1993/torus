@@ -2,7 +2,7 @@ import math
 import time
 
 from render import Render
-from object3d import Torus, Cylinder
+from object3d import Torus, Cylinder, Sphere
 
 class TORUS_CFG:
     R = 2
@@ -14,6 +14,11 @@ class CYLINDER_CFG:
     r = 1
     H = 3
     center = [1, 0.5, 0]
+    density = 100
+
+class SPHERE_CFG:
+    r = 1.5
+    center = [0.5,0,1]
     density = 100
 
 class RENDER_CFG:
@@ -30,11 +35,17 @@ if __name__ == '__main__':
     # )
     # points, norm_vectors = torus()
 
-    points, norm_vectors = Cylinder(
-        r = CYLINDER_CFG.r,
-        H = CYLINDER_CFG.H,
-        center = CYLINDER_CFG.center,
-        density = CYLINDER_CFG.density
+    # points, norm_vectors = Cylinder(
+    #     r = CYLINDER_CFG.r,
+    #     H = CYLINDER_CFG.H,
+    #     center = CYLINDER_CFG.center,
+    #     density = CYLINDER_CFG.density
+    # )()
+    
+    points, norm_vectors = Sphere(
+        r=SPHERE_CFG.r,
+        center=SPHERE_CFG.center,
+        density=SPHERE_CFG.density
     )()
 
     renderer = Render(
