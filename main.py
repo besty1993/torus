@@ -8,18 +8,18 @@ class TORUS_CFG:
     R = 2
     r = 1
     center = [1, 0.5, 0.7]
-    density = 200
+    resolution = 200
 
 class CYLINDER_CFG:
     r = 1
     H = 3
     center = [1, 0.5, 0]
-    density = 100
+    resolution = 100
 
 class SPHERE_CFG:
     r = 1.5
     center = [0.5,0,1]
-    density = 100
+    resolution = 100
 
 class RENDER_CFG:
     light_vector = [1, 1, 1]
@@ -27,26 +27,25 @@ class RENDER_CFG:
 
 
 if __name__ == '__main__':
-    # torus = Torus(
+    # points, norm_vectors = Torus(
     #     R=TORUS_CFG.R,
     #     r=TORUS_CFG.r,
     #     center=TORUS_CFG.center,
-    #     density=TORUS_CFG.density
-    # )
-    # points, norm_vectors = torus()
-
-    # points, norm_vectors = Cylinder(
-    #     r = CYLINDER_CFG.r,
-    #     H = CYLINDER_CFG.H,
-    #     center = CYLINDER_CFG.center,
-    #     density = CYLINDER_CFG.density
+    #     resolution=TORUS_CFG.resolution
     # )()
-    
-    points, norm_vectors = Sphere(
-        r=SPHERE_CFG.r,
-        center=SPHERE_CFG.center,
-        density=SPHERE_CFG.density
+
+    points, norm_vectors = Cylinder(
+        r = CYLINDER_CFG.r,
+        H = CYLINDER_CFG.H,
+        center = CYLINDER_CFG.center,
+        resolution = CYLINDER_CFG.resolution
     )()
+    
+    # points, norm_vectors = Sphere(
+    #     r=SPHERE_CFG.r,
+    #     center=SPHERE_CFG.center,
+    #     resolution=SPHERE_CFG.resolution
+    # )()
 
     renderer = Render(
         light_vector=RENDER_CFG.light_vector,

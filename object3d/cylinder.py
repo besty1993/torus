@@ -3,8 +3,8 @@ import numpy as np
 from object3d.object3d import Object3D
 
 class Cylinder(Object3D):
-    def __init__(self, r, H, center=[0,0,0], density=100):
-        super().__init__(center, density)
+    def __init__(self, r, H, center=[0,0,0], resolution=100):
+        super().__init__(center, resolution)
         self.r = r
         self.H = H
         self.max = np.linalg.norm(center) + np.linalg.norm([self.r + self.H/2])
@@ -16,8 +16,8 @@ class Cylinder(Object3D):
         return np.array([x, y, z])
 
     def getPoints(self):
-        theta_linspace = np.linspace(0, 2*np.pi, self.density, endpoint=False)
-        h_linspace = np.linspace((-1)*self.H/2, self.H/2, self.density)
+        theta_linspace = np.linspace(0, 2*np.pi, self.resolution, endpoint=False)
+        h_linspace = np.linspace((-1)*self.H/2, self.H/2, self.resolution)
         vectors = [
             self.getPoint(theta, h) \
                 for theta in theta_linspace \
@@ -32,8 +32,8 @@ class Cylinder(Object3D):
         return np.array([x, y, z])
 
     def getNormalVectors(self):
-        theta_linspace = np.linspace(0, 2*np.pi, self.density, endpoint=False)
-        h_linspace = np.linspace((-1)*self.H/2, self.H/2, self.density)
+        theta_linspace = np.linspace(0, 2*np.pi, self.resolution, endpoint=False)
+        h_linspace = np.linspace((-1)*self.H/2, self.H/2, self.resolution)
         vectors = [
             self.getNormalVector(theta, h) \
                 for theta in theta_linspace \

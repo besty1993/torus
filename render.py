@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 class Render():
-    def __init__(self, light_vector, window_size=(70,35)):
+    def __init__(self, light_vector=(1,1,1), window_size=(70,35)):
         self.setProjPlane(0,0,1)
         self.setLightVector(*light_vector)
         self.window_size = window_size
@@ -113,15 +113,21 @@ class Render():
         return new_vectors
 
     @classmethod
-    def getDuplicateIdxs(cls, array):
-        df = pd.DataFrame(array).copy()
+    def getDuplicateIdxs(cls, proj):
+        """
+        Get duplicate indices 
+        """
+        df = pd.DataFrame(proj).copy()
         df[0] = 1000*df[0]+df[1]
         return df.groupby([0]).indices
 
     @classmethod
     def filterByDistance(cls, points, proj, bright):
         """
-        Decide which point to print among many points in same position, by its z value.
+        When the rendered object is printed on the window,
+        only one point per window grid is needed.
+        So, if there are several points that will be printed on same grid,
+        select only one point which is the farthest from the projection plane.
         Since object is projected on XY-plane, z value is the distance between the projection plane and the point.
         Once the object is projected, only the point with the longest distance should be remained.
         """

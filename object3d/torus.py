@@ -3,9 +3,9 @@ import numpy as np
 from object3d.object3d import Object3D
 
 class Torus(Object3D):
-    def __init__(self, R, r, center=[0,0,0], density=100):
+    def __init__(self, R, r, center=[0,0,0], resolution=100):
         # https://web.cs.ucdavis.edu/~amenta/s12/findnorm.pdf
-        super().__init__(center, density)
+        super().__init__(center, resolution)
         self.r_b = R      ## The torus center to the tube center
         self.r_l = r      ## The radius of the tube
         self.max = R + r + np.linalg.norm(center)
@@ -26,7 +26,7 @@ class Torus(Object3D):
         """
         Get all points defined by grided theta and phi
         """
-        linspace = np.linspace(0, 2*np.pi, self.density)
+        linspace = np.linspace(0, 2*np.pi, self.resolution)
         vectors = [
             self.getPoint(theta, phi) \
                 for theta in linspace \
@@ -42,7 +42,7 @@ class Torus(Object3D):
         return np.array([x, y, z])
 
     def getNormalVectors(self):
-        linspace = np.linspace(0, 2*np.pi, self.density)
+        linspace = np.linspace(0, 2*np.pi, self.resolution)
         vectors = [
             self.getNormalVector(theta, phi) \
                 for theta in linspace \
